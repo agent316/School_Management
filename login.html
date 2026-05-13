@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Little Scholars — Sign In</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black:    #0a0a0a;
+  --black-2:  #111111;
+  --black-3:  #1a1a1a;
+  --border:   #2a2a2a;
+  --border-2: #333333;
+  --green:    #22c55e;
+  --green-bg: rgba(34,197,94,0.08);
+  --red:      #ef4444;
+  --red-bg:   rgba(239,68,68,0.10);
+  --text-1:   #f5f5f5;
+  --text-2:   #a3a3a3;
+  --text-3:   #555555;
+  --radius-sm: 6px;
+  --radius:    10px;
+  --transition: 0.18s ease;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { font-size:14px; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--black);
+  color: var(--text-1);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.25;
+  pointer-events: none;
+}
+.card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 400px;
+  background: var(--black-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  animation: fadeUp 0.35s ease both;
+}
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.card-top {
+  padding: 32px 32px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.logo-mark {
+  width: 48px; height: 48px;
+  background: var(--green);
+  border-radius: var(--radius);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 19px; font-weight: 900; color: var(--black);
+  letter-spacing: -1px;
+}
+.logo-name { font-size: 15px; font-weight: 700; color: var(--text-1); letter-spacing: -0.3px; }
+.logo-sub  { font-size: 10px; color: var(--text-3); font-weight: 500; letter-spacing: 0.7px; text-transform: uppercase; font-family: 'DM Mono', monospace; margin-top: -4px; }
+.term-chip {
+  position: absolute; top: 14px; right: 14px;
+  background: var(--green-bg);
+  border: 1px solid rgba(34,197,94,0.2);
+  color: var(--green);
+  font-size: 9px; font-weight: 600;
+  padding: 3px 8px; border-radius: 20px;
+  font-family: 'DM Mono', monospace;
+}
+.card-body { padding: 26px 32px 32px; }
+.alert {
+  background: var(--red-bg);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  font-size: 12px; color: var(--red);
+  font-family: 'DM Mono', monospace;
+  margin-bottom: 18px;
+  display: none;
+}
+.alert.show { display: block; }
+.field { margin-bottom: 14px; }
+.field-label { display: block; font-size: 11px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 6px; }
+.input-wrap  { position: relative; display: flex; align-items: center; }
+.field-input {
+  width: 100%;
+  background: var(--black-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 11px 38px 11px 13px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px; color: var(--text-1);
+  outline: none;
+  transition: all var(--transition);
+}
+.field-input::placeholder { color: var(--text-3); }
+.field-input:focus { border-color: rgba(34,197,94,0.45); background: var(--black); box-shadow: 0 0 0 3px rgba(34,197,94,0.07); }
+.field-input.error { border-color: rgba(239,68,68,0.45); }
+.field-error { font-size: 11px; color: var(--red); margin-top: 5px; font-family: 'DM Mono', monospace; display: none; }
+.field-error.show { display: block; }
+.pw-toggle { position: absolute; right: 10px; background: transparent; border: none; cursor: pointer; color: var(--text-3); font-size: 13px; padding: 0; transition: color var(--transition); font-family: 'DM Mono', monospace; }
+.pw-toggle:hover { color: var(--text-1); }
+.row { display: flex; align-items: center; justify-content: space-between; margin: 6px 0 20px; }
+.remember { display: flex; align-items: center; gap: 7px; cursor: pointer; user-select: none; }
+.remember input { display: none; }
+.cb { width: 15px; height: 15px; border: 1px solid var(--border-2); border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 9px; color: transparent; transition: all var(--transition); flex-shrink: 0; }
+.remember input:checked ~ .cb { background: var(--green); border-color: var(--green); color: var(--black); }
+.remember span { font-size: 12px; color: var(--text-2); }
+.forgot { font-size: 12px; color: var(--green); text-decoration: none; font-weight: 500; transition: opacity var(--transition); }
+.forgot:hover { opacity: 0.7; }
+.signin-btn {
+  width: 100%;
+  background: var(--green); color: var(--black);
+  border: none; border-radius: var(--radius-sm);
+  padding: 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 700;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: all var(--transition);
+}
+.signin-btn:hover { background: #16a34a; }
+.signin-btn:active { transform: scale(0.99); }
+.signin-btn:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+.spinner { width: 13px; height: 13px; border: 2px solid rgba(0,0,0,0.25); border-top-color: var(--black); border-radius: 50%; animation: spin 0.6s linear infinite; display: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.card-foot { padding: 14px 32px; border-top: 1px solid var(--border); text-align: center; font-size: 11px; color: var(--text-3); font-family: 'DM Mono', monospace; }
+.card-foot a { color: var(--text-3); text-decoration: none; transition: color var(--transition); }
+.card-foot a:hover { color: var(--green); }
+.success-state { display: none; flex-direction: column; align-items: center; text-align: center; padding: 32px; }
+.success-icon { width: 52px; height: 52px; background: var(--green-bg); border: 1px solid rgba(34,197,94,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--green); margin-bottom: 14px; animation: pop 0.3s ease; }
+@keyframes pop { from{transform:scale(0.6);opacity:0} to{transform:scale(1);opacity:1} }
+.success-title { font-size: 15px; font-weight: 700; color: var(--text-1); margin-bottom: 5px; }
+.success-sub   { font-size: 12px; color: var(--text-3); line-height: 1.5; font-family: 'DM Mono', monospace; }
+.progress-track { width: 100%; height: 2px; background: var(--border); border-radius: 99px; margin-top: 20px; overflow: hidden; }
+.progress-fill  { height: 100%; background: var(--green); border-radius: 99px; width: 0; transition: width 1.8s ease; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <span class="term-chip">TERM 2 · 2025/26</span>
+
+  <div class="card-top">
+    <div class="logo-mark">LS</div>
+    <div class="logo-name">Little Scholars</div>
+    <div class="logo-sub">Student Portal</div>
+  </div>
+
+  <div class="card-body" id="form-state">
+    <div class="alert" id="alert">Incorrect Student ID or password. Please try again.</div>
+
+    <div class="field">
+      <label class="field-label" for="sid">Student ID / Username</label>
+      <div class="input-wrap">
+        <input type="text" id="sid" class="field-input" placeholder="e.g. STU-2024-0421">
+      </div>
+      <div class="field-error" id="sid-err">Please enter your Student ID.</div>
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="pw">Password</label>
+      <div class="input-wrap">
+        <input type="password" id="pw" class="field-input" placeholder="Enter your password">
+        <button type="button" class="pw-toggle" onclick="togglePw()" aria-label="Toggle password">
+          <span id="eye">●</span>
+        </button>
+      </div>
+      <div class="field-error" id="pw-err">Please enter your password.</div>
+    </div>
+
+    <div class="row">
+      <label class="remember">
+        <input type="checkbox" id="rem">
+        <span class="cb">✓</span>
+        <span>Remember me</span>
+      </label>
+      <a href="#" class="forgot">Forgot Password?</a>
+    </div>
+
+    <button class="signin-btn" id="btn" onclick="handleLogin()">
+      <span id="btn-txt">Sign In</span>
+      <span id="btn-arr">→</span>
+      <div class="spinner" id="spin"></div>
+    </button>
+  </div>
+
+  <div class="success-state" id="success-state">
+    <div class="success-icon">✓</div>
+    <div class="success-title" id="succ-name">Welcome back!</div>
+    <div class="success-sub">Login successful.<br>Redirecting to your dashboard…</div>
+    <div class="progress-track"><div class="progress-fill" id="prog"></div></div>
+  </div>
+
+  <div class="card-foot" id="foot">
+    Need help? <a href="#">Contact Support</a> &nbsp;·&nbsp; <a href="#">Privacy Policy</a>
+  </div>
+</div>
+
+<script>
+const ACCOUNTS = {
+  'STU-2024-0421': { pw: 'amara123', name: 'Amara' },
+  'STU-2024-0388': { pw: 'kwame456', name: 'Kwame' },
+};
+
+function togglePw() {
+  const p = document.getElementById('pw');
+  const e = document.getElementById('eye');
+  p.type = p.type === 'password' ? 'text' : 'password';
+  e.textContent = p.type === 'password' ? '●' : '○';
+}
+
+function handleLogin() {
+  const sid = document.getElementById('sid').value.trim();
+  const pw  = document.getElementById('pw').value.trim();
+  const sidI = document.getElementById('sid');
+  const pwI  = document.getElementById('pw');
+  const sidE = document.getElementById('sid-err');
+  const pwE  = document.getElementById('pw-err');
+  const alrt = document.getElementById('alert');
+  let ok = true;
+
+  [sidI, pwI].forEach(i => i.classList.remove('error'));
+  [sidE, pwE].forEach(e => e.classList.remove('show'));
+  alrt.classList.remove('show');
+
+  if (!sid) { sidI.classList.add('error'); sidE.classList.add('show'); ok = false; }
+  if (!pw)  { pwI.classList.add('error');  pwE.classList.add('show');  ok = false; }
+  if (!ok) return;
+
+  const btn = document.getElementById('btn');
+  btn.disabled = true;
+  document.getElementById('btn-txt').textContent = 'Signing in…';
+  document.getElementById('btn-arr').style.display = 'none';
+  document.getElementById('spin').style.display = 'block';
+
+  setTimeout(() => {
+    const acct = ACCOUNTS[sid];
+    btn.disabled = false;
+    document.getElementById('btn-txt').textContent = 'Sign In';
+    document.getElementById('btn-arr').style.display = '';
+    document.getElementById('spin').style.display = 'none';
+
+    if (acct && acct.pw === pw) {
+      document.getElementById('form-state').style.display = 'none';
+      document.getElementById('foot').style.display = 'none';
+      const ss = document.getElementById('success-state');
+      ss.style.display = 'flex';
+      document.getElementById('succ-name').textContent = 'Welcome back, ' + acct.name + '!';
+      setTimeout(() => { document.getElementById('prog').style.width = '100%'; }, 80);
+    } else {
+      alrt.classList.add('show');
+      sidI.classList.add('error');
+      pwI.classList.add('error');
+    }
+  }, 1300);
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+</script>
+</body>
+</html>
