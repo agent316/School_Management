@@ -88,15 +88,7 @@ body {
 }
 .logo-name{font-size:15px;font-weight:700;color:var(--text-1);letter-spacing:-0.3px;}
 .logo-sub {font-size:10px;color:var(--text-3);font-weight:500;letter-spacing:0.7px;text-transform:uppercase;font-family:'DM Mono',monospace;margin-top:-4px;}
-.term-chip-login {
-  position:absolute;top:14px;right:14px;
-  background:var(--green-bg);
-  border:1px solid rgba(34,197,94,0.2);
-  color:var(--green);
-  font-size:9px;font-weight:600;
-  padding:3px 8px;border-radius:20px;
-  font-family:'DM Mono',monospace;
-}
+
 .card-body-login{padding:26px 32px 32px;}
 .alert {
   background:var(--red-bg);
@@ -128,12 +120,13 @@ body {
 .field-input.error{border-color:rgba(239,68,68,0.45);}
 .field-error{font-size:11px;color:var(--red);margin-top:5px;font-family:'DM Mono',monospace;display:none;}
 .field-error.show{display:block;}
-.pw-toggle{position:absolute;right:10px;background:transparent;border:none;cursor:pointer;color:var(--text-3);font-size:13px;padding:0;transition:color var(--transition);font-family:'DM Mono',monospace;}
+.pw-toggle{position:absolute;right:10px;background:transparent;border:none;cursor:pointer;color:var(--text-3);padding:0;display:flex;align-items:center;transition:color var(--transition);}
 .pw-toggle:hover{color:var(--text-1);}
+.pw-toggle svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
 .row{display:flex;align-items:center;justify-content:space-between;margin:6px 0 20px;}
 .remember{display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none;}
 .remember input{display:none;}
-.cb{width:15px;height:15px;border:1px solid var(--border-2);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;color:transparent;transition:all var(--transition);flex-shrink:0;}
+.cb{width:15px;height:15px;border:1px solid var(--border-2);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;color:transparent;background:transparent;transition:all var(--transition);flex-shrink:0;}
 .remember input:checked~.cb{background:var(--green);border-color:var(--green);color:var(--black);}
 .remember span{font-size:12px;color:var(--text-2);}
 .forgot{font-size:12px;color:var(--green);text-decoration:none;font-weight:500;transition:opacity var(--transition);}
@@ -374,7 +367,6 @@ body {
 ══════════════════════════════════════════ -->
 <div id="login-page">
   <div class="login-card">
-    <span class="term-chip-login">TERM 2 · 2025/26</span>
     <div class="card-top">
       <div class="logo-mark">LS</div>
       <div class="logo-name">Little Scholars</div>
@@ -393,8 +385,8 @@ body {
         <label class="field-label" for="pw">Password</label>
         <div class="input-wrap">
           <input type="password" id="pw" class="field-input" placeholder="Enter your password">
-          <button type="button" class="pw-toggle" onclick="togglePw()" aria-label="Toggle password">
-            <span id="eye">●</span>
+          <button type="button" class="pw-toggle" id="pw-toggle-btn" onclick="togglePw()" aria-label="Toggle password">
+            <svg id="eye-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           </button>
         </div>
         <div class="field-error" id="pw-err">Please enter your password.</div>
@@ -718,9 +710,16 @@ const ACCOUNTS = {
 /* ─── LOGIN ─────────────────────────────────── */
 function togglePw() {
   const p = document.getElementById('pw');
-  const e = document.getElementById('eye');
-  p.type = p.type === 'password' ? 'text' : 'password';
-  e.textContent = p.type === 'password' ? '●' : '○';
+  const icon = document.getElementById('eye-icon');
+  if (p.type === 'password') {
+    p.type = 'text';
+    // eye-off icon (slash through eye)
+    icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>';
+  } else {
+    p.type = 'password';
+    // eye icon
+    icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+  }
 }
 
 function handleLogin() {
@@ -815,7 +814,7 @@ function handleSignOut() {
     document.getElementById('sid').value = '';
     document.getElementById('pw').value  = '';
     document.getElementById('pw').type   = 'password';
-    document.getElementById('eye').textContent = '●';
+    document.getElementById('eye-icon').innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
     document.getElementById('alert').classList.remove('show');
     ['sid','pw'].forEach(id => {
       document.getElementById(id).classList.remove('error');
