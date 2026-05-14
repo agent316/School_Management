@@ -638,11 +638,11 @@ function getSessionId() {
   const urlId  = params.get('uid');
   if (urlId) {
     // Persist it so refreshing the page still works
-    localStorage.setItem('ls_user_id',   urlId);
-    localStorage.setItem('ls_user_role', 'student');
+    sessionStorage.setItem('ls_user_id',   urlId);
+    sessionStorage.setItem('ls_user_role', 'student');
     return urlId;
   }
-  return localStorage.getItem('ls_user_id');
+  return sessionStorage.getItem('ls_user_id');
 }
 
 (function authGuard() {
