@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Little Scholars — Teacher Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black:    #0a0a0a;
+  --black-2:  #111111;
+  --black-3:  #1a1a1a;
+  --black-4:  #222222;
+  --border:   #2a2a2a;
+  --border-2: #333333;
+  --green:    #22c55e;
+  --green-bg: rgba(34,197,94,0.08);
+  --red:      #ef4444;
+  --red-bg:   rgba(239,68,68,0.10);
+  --amber:    #fbbf24;
+  --amber-bg: rgba(251,191,36,0.10);
+  --blue:     #a5b4fc;
+  --blue-bg:  rgba(99,102,241,0.12);
+  --text-1:   #f5f5f5;
+  --text-2:   #a3a3a3;
+  --text-3:   #555555;
+  --radius-sm: 6px;
+  --radius:    10px;
+  --transition: 0.18s ease;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { font-size:14px; }
+body { font-family:'DM Sans',sans-serif; background:var(--black); color:var(--text-1); min-height:100vh; -webkit-font-smoothing:antialiased; }
+
+.portal-wrap { display:flex; min-height:100vh; }
+
+/* ── SIDEBAR ── */
+.sidebar { width:240px; min-height:100vh; background:var(--black-2); border-right:1px solid var(--border); display:flex; flex-direction:column; position:fixed; top:0; left:0; bottom:0; z-index:50; animation:slideIn 0.35s ease both; }
+@keyframes slideIn { from{transform:translateX(-240px);opacity:0} to{transform:translateX(0);opacity:1} }
+.sidebar-logo { padding:22px 20px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; }
+.logo-mark-sm { width:30px; height:30px; background:var(--green); border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:14px; color:var(--black); font-weight:900; }
+.logo-name-sm { font-size:13px; font-weight:700; color:var(--text-1); letter-spacing:-0.2px; line-height:1.2; }
+.logo-sub-sm  { font-size:9px; color:var(--text-3); font-weight:500; letter-spacing:0.6px; text-transform:uppercase; margin-top:1px; }
+.user-pill { margin:14px 12px; background:var(--black-3); border:1px solid var(--border); border-radius:var(--radius); padding:11px 13px; display:flex; align-items:center; gap:10px; }
+.avatar { width:32px; height:32px; border-radius:50%; background:var(--amber-bg); border:1.5px solid var(--amber); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:var(--amber); font-family:'DM Mono',monospace; flex-shrink:0; }
+.u-name  { font-size:12px; font-weight:600; color:var(--text-1); line-height:1.2; }
+.u-sub   { font-size:10px; color:var(--text-3); margin-top:1px; }
+.u-badge { display:inline-block; margin-top:3px; background:var(--amber-bg); border:1px solid rgba(251,191,36,0.2); color:var(--amber); font-size:9px; font-weight:700; padding:1px 7px; border-radius:3px; font-family:'DM Mono',monospace; }
+.nav-group { padding:6px 12px 0; }
+.nav-label { font-size:9px; font-weight:600; letter-spacing:1.2px; text-transform:uppercase; color:var(--text-3); padding:10px 8px 5px; }
+.nav-item { display:flex; align-items:center; gap:9px; padding:9px 10px; border-radius:var(--radius-sm); color:var(--text-2); cursor:pointer; font-size:13px; font-weight:500; transition:all var(--transition); margin-bottom:1px; border:1px solid transparent; user-select:none; }
+.nav-item:hover  { background:var(--black-3); color:var(--text-1); }
+.nav-item.active { background:var(--green-bg); color:var(--green); border-color:rgba(34,197,94,0.2); }
+.nav-icon { width:15px; text-align:center; font-size:13px; opacity:0.85; }
+.nav-badge { margin-left:auto; background:var(--red); color:#fff; font-size:10px; font-weight:700; font-family:'DM Mono',monospace; padding:1px 6px; border-radius:20px; line-height:1.6; }
+.nav-badge-amber { margin-left:auto; background:var(--amber-bg); color:var(--amber); font-size:10px; font-weight:700; font-family:'DM Mono',monospace; padding:1px 6px; border-radius:20px; line-height:1.6; border:1px solid rgba(251,191,36,0.2); }
+.sidebar-footer { margin-top:auto; padding:13px 12px; border-top:1px solid var(--border); }
+.signout-btn { width:100%; background:transparent; border:1px solid var(--border-2); border-radius:var(--radius-sm); color:var(--text-3); padding:8px 12px; font-family:'DM Sans',sans-serif; font-size:12px; font-weight:500; cursor:pointer; transition:all var(--transition); display:flex; align-items:center; justify-content:center; gap:6px; }
+.signout-btn:hover { border-color:var(--red); color:var(--red); }
+
+/* ── MAIN ── */
+.main { margin-left:240px; flex:1; display:flex; flex-direction:column; min-height:100vh; animation:fadeIn 0.4s ease 0.15s both; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+.topbar { height:54px; border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 26px; gap:12px; position:sticky; top:0; background:rgba(10,10,10,0.94); backdrop-filter:blur(12px); z-index:40; }
+.topbar-title { font-size:13px; font-weight:600; color:var(--text-1); }
+.topbar-sep   { color:var(--border-2); }
+.topbar-sub   { font-size:12px; color:var(--text-3); }
+.topbar-right { margin-left:auto; display:flex; align-items:center; gap:8px; }
+.chip-green { font-size:10px; font-weight:600; padding:3px 9px; border-radius:20px; font-family:'DM Mono',monospace; background:var(--green-bg); border:1px solid rgba(34,197,94,0.22); color:var(--green); }
+.chip-amber { font-size:10px; font-weight:600; padding:3px 9px; border-radius:20px; font-family:'DM Mono',monospace; background:var(--amber-bg); border:1px solid rgba(251,191,36,0.22); color:var(--amber); }
+.icon-btn { width:30px; height:30px; background:var(--black-3); border:1px solid var(--border); border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:13px; transition:all var(--transition); position:relative; }
+.icon-btn:hover { border-color:var(--border-2); }
+.notif-dot { position:absolute; top:5px; right:5px; width:5px; height:5px; background:var(--red); border-radius:50%; border:1px solid var(--black-3); }
+.content { padding:26px; flex:1; }
+.tab-panel { display:none; }
+.tab-panel.active { display:block; animation:tabIn 0.2s ease both; }
+@keyframes tabIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── SHARED COMPONENTS ── */
+.page-header { margin-bottom:22px; }
+.page-header h2 { font-size:20px; font-weight:700; letter-spacing:-0.4px; }
+.page-header p  { font-size:12px; color:var(--text-3); margin-top:3px; }
+.stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:18px; }
+.stat-card { background:var(--black-2); border:1px solid var(--border); border-radius:var(--radius); padding:16px 18px; transition:border-color var(--transition); }
+.stat-card:hover { border-color:var(--border-2); }
+.stat-card.ac-green { border-color:rgba(34,197,94,0.28); }
+.stat-card.ac-amber { border-color:rgba(251,191,36,0.28); }
+.stat-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.stat-icon-wrap { width:28px; height:28px; border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; font-size:13px; }
+.stat-delta { font-size:10px; font-weight:600; font-family:'DM Mono',monospace; padding:2px 6px; border-radius:4px; }
+.delta-up    { background:var(--green-bg); color:var(--green); }
+.delta-amber { background:var(--amber-bg); color:var(--amber); }
+.stat-value { font-size:25px; font-weight:700; letter-spacing:-1px; line-height:1; font-family:'DM Mono',monospace; }
+.stat-label { font-size:10px; color:var(--text-3); margin-top:4px; font-weight:500; text-transform:uppercase; letter-spacing:0.5px; }
+.card { background:var(--black-2); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+.card-head { padding:14px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.card-title  { font-size:12px; font-weight:600; color:var(--text-1); }
+.card-body   { padding:14px 18px; }
+.grid-2   { display:grid; grid-template-columns:1fr 1fr;    gap:14px; }
+.grid-3-1 { display:grid; grid-template-columns:1.5fr 1fr; gap:14px; }
+.perf-row { display:flex; align-items:center; justify-content:space-between; padding:9px 0; border-bottom:1px solid var(--border); font-size:12px; }
+.perf-row:last-child { border-bottom:none; }
+.perf-key { color:var(--text-2); font-weight:500; }
+.perf-val { font-weight:700; font-family:'DM Mono',monospace; }
+.pv-green { color:var(--green); } .pv-red { color:var(--red); } .pv-amber { color:var(--amber); }
+.progress-track { height:3px; background:var(--black-4); border-radius:99px; overflow:hidden; margin-top:6px; }
+.progress-fill  { height:100%; border-radius:99px; background:var(--green); }
+
+/* ── DASHBOARD SPECIFICS ── */
+.class-item { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--border); cursor:pointer; }
+.class-item:last-child { border-bottom:none; }
+.class-icon { width:32px; height:32px; border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; }
+.class-name { font-size:13px; font-weight:600; }
+.class-sub  { font-size:11px; color:var(--text-3); margin-top:1px; }
+.class-meta { margin-left:auto; text-align:right; }
+.class-avg  { font-family:'DM Mono',monospace; font-size:13px; font-weight:700; }
+.class-count{ font-size:10px; color:var(--text-3); margin-top:1px; }
+.activity-item { display:flex; align-items:flex-start; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); }
+.activity-item:last-child { border-bottom:none; }
+.act-dot  { width:6px; height:6px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+.act-text { font-size:12px; color:var(--text-2); line-height:1.5; flex:1; }
+.act-text strong { color:var(--text-1); font-weight:600; }
+.act-time { font-size:10px; color:var(--text-3); font-family:'DM Mono',monospace; margin-top:2px; }
+
+/* ── STUDENTS TABLE ── */
+.search-input { background:var(--black-3); border:1px solid var(--border); border-radius:var(--radius-sm); padding:6px 12px; font-family:'DM Sans',sans-serif; font-size:13px; color:var(--text-1); outline:none; transition:all var(--transition); width:220px; }
+.search-input:focus { border-color:rgba(34,197,94,0.45); }
+.search-input::placeholder { color:var(--text-3); }
+.data-table { width:100%; border-collapse:collapse; font-size:12px; }
+.data-table thead tr { border-bottom:1px solid var(--border); }
+.data-table th { padding:9px 13px; text-align:left; font-size:9px; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:0.8px; font-family:'DM Mono',monospace; }
+.data-table td { padding:10px 13px; border-bottom:1px solid var(--border); font-weight:500; vertical-align:middle; }
+.data-table tr:last-child td { border-bottom:none; }
+.data-table tbody tr:hover td { background:var(--black-3); }
+.stu-av { width:26px; height:26px; border-radius:50%; background:var(--green-bg); border:1px solid rgba(34,197,94,0.3); display:inline-flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; color:var(--green); font-family:'DM Mono',monospace; margin-right:8px; vertical-align:middle; flex-shrink:0; }
+.grade-pill { font-family:'DM Mono',monospace; font-size:11px; font-weight:700; padding:2px 8px; border-radius:4px; }
+.gp-a{background:var(--green-bg);color:var(--green);} .gp-b{background:var(--blue-bg);color:var(--blue);} .gp-c{background:var(--amber-bg);color:var(--amber);} .gp-d{background:var(--red-bg);color:var(--red);}
+.att-bar   { display:inline-flex; align-items:center; gap:6px; }
+.att-track { width:60px; height:4px; background:var(--black-4); border-radius:99px; overflow:hidden; }
+.att-fill  { height:100%; border-radius:99px; }
+
+/* ── RESULTS ENTRY ── */
+.ctrl-row   { display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap; align-items:flex-end; }
+.ctrl-group { display:flex; flex-direction:column; gap:5px; }
+.ctrl-label { font-size:10px; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:0.5px; font-family:'DM Mono',monospace; }
+.ctrl-select { background:var(--black-3); border:1px solid var(--border); border-radius:var(--radius-sm); padding:8px 12px; font-family:'DM Sans',sans-serif; font-size:12px; color:var(--text-1); outline:none; cursor:pointer; transition:all var(--transition); min-width:160px; }
+.ctrl-select:focus { border-color:rgba(34,197,94,0.45); }
+.ctrl-select option { background:var(--black-3); }
+.load-btn { background:var(--green); color:var(--black); border:none; border-radius:var(--radius-sm); padding:9px 18px; font-family:'DM Sans',sans-serif; font-size:12px; font-weight:700; cursor:pointer; transition:all var(--transition); align-self:flex-end; }
+.load-btn:hover { background:#16a34a; }
+
+.grade-scale { background:var(--black-3); border:1px solid var(--border); border-radius:var(--radius); padding:14px 16px; margin-bottom:18px; }
+.gs-title { font-size:10px; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:10px; font-family:'DM Mono',monospace; }
+.gs-row   { display:flex; gap:6px; flex-wrap:wrap; }
+.gs-item  { display:flex; align-items:center; gap:5px; background:var(--black-4); border:1px solid var(--border); border-radius:4px; padding:3px 9px; }
+.gs-grade { font-family:'DM Mono',monospace; font-size:11px; font-weight:700; }
+.gs-range { font-size:10px; color:var(--text-3); }
+
+.entry-table { width:100%; border-collapse:collapse; }
+.entry-table thead tr { border-bottom:2px solid var(--border-2); }
+.entry-table th { padding:10px 12px; text-align:left; font-size:9px; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:0.8px; font-family:'DM Mono',monospace; white-space:nowrap; }
+.entry-table th.c { text-align:center; }
+.entry-table td { padding:6px 8px; border-bottom:1px solid var(--border); vertical-align:middle; }
+.entry-table tr:last-child td { border-bottom:none; }
+.entry-table tbody tr:hover td { background:rgba(34,197,94,0.02); }
+.stu-cell { display:flex; align-items:center; gap:8px; padding:2px 4px; }
+.stu-full  { font-size:12px; font-weight:600; }
+.stu-id    { font-size:10px; color:var(--text-3); font-family:'DM Mono',monospace; }
+.score-wrap { display:flex; flex-direction:column; align-items:center; gap:2px; }
+.score-input { width:68px; background:var(--black-3); border:1px solid var(--border); border-radius:var(--radius-sm); padding:7px 8px; text-align:center; font-family:'DM Mono',monospace; font-size:12px; font-weight:600; color:var(--text-1); outline:none; transition:all var(--transition); }
+.score-input:focus   { border-color:rgba(34,197,94,0.45); background:var(--black); box-shadow:0 0 0 3px rgba(34,197,94,0.07); }
+.score-input.has-val { border-color:rgba(34,197,94,0.25); }
+.score-input.err-val { border-color:rgba(239,68,68,0.4); background:rgba(239,68,68,0.04); }
+.max-lbl { font-size:9px; color:var(--text-3); font-family:'DM Mono',monospace; }
+.tot-cell   { font-family:'DM Mono',monospace; font-size:13px; font-weight:700; text-align:center; padding:6px 12px; }
+.grade-cell { text-align:center; padding:6px 12px; }
+.stat-cell  { text-align:center; padding:6px 12px; }
+.rs-dot   { width:7px; height:7px; border-radius:50%; display:inline-block; }
+.rs-saved   { background:var(--green); }
+.rs-unsaved { background:var(--amber); }
+.rs-missing { background:var(--text-3); }
+.rs-lbl { font-size:10px; font-family:'DM Mono',monospace; margin-left:4px; }
+
+.tbl-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:16px; padding-top:14px; border-top:1px solid var(--border); }
+.act-btn { padding:9px 18px; border-radius:var(--radius-sm); font-family:'DM Sans',sans-serif; font-size:12px; font-weight:700; cursor:pointer; transition:all var(--transition); border:1px solid transparent; }
+.btn-save  { background:var(--green); color:var(--black); }
+.btn-save:hover { background:#16a34a; }
+.btn-clear { background:transparent; border-color:var(--border-2); color:var(--text-3); }
+.btn-clear:hover { border-color:var(--red); color:var(--red); }
+.btn-exp   { background:transparent; border-color:var(--border-2); color:var(--text-2); }
+.btn-exp:hover { color:var(--text-1); }
+
+.summary-bar { display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+.sb-item { background:var(--black-3); border:1px solid var(--border); border-radius:var(--radius-sm); padding:8px 14px; }
+.sb-val  { font-size:16px; font-weight:700; font-family:'DM Mono',monospace; }
+.sb-lbl  { font-size:9px; color:var(--text-3); font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.5px; }
+
+.ep-wrap  { padding:48px 20px; text-align:center; }
+.ep-icon  { font-size:28px; margin-bottom:12px; filter:grayscale(1) opacity(0.3); }
+.ep-title { font-size:15px; font-weight:600; color:var(--text-2); margin-bottom:6px; }
+.ep-desc  { font-size:12px; line-height:1.6; color:var(--text-3); }
+
+/* ── PUBLISHED RESULTS TABLE ── */
+.pub-table-wrap { overflow-x:auto; }
+.pub-table { width:100%; border-collapse:collapse; font-size:12px; min-width:660px; }
+.pub-table thead tr { border-bottom:1px solid var(--border); }
+.pub-table th { padding:9px 13px; text-align:left; font-size:9px; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:0.8px; font-family:'DM Mono',monospace; }
+.pub-table td { padding:10px 13px; border-bottom:1px solid var(--border); font-weight:500; }
+.pub-table tr:last-child td { border-bottom:none; }
+.pub-table tbody tr:hover td { background:var(--black-3); }
+.pub-table tfoot td { background:var(--black-3); font-weight:700; border-top:1px solid var(--border-2); }
+.remark-tag { font-size:10px; font-weight:700; padding:2px 8px; border-radius:4px; text-transform:uppercase; letter-spacing:0.3px; }
+.rm-ex{background:var(--green-bg);color:var(--green);} .rm-vg{background:var(--blue-bg);color:var(--blue);} .rm-gd{background:var(--amber-bg);color:#ca8a04;} .rm-av{background:var(--red-bg);color:var(--red);}
+
+/* ── ANNOUNCEMENTS ── */
+.ann-item { display:flex; gap:11px; padding:11px 0; border-bottom:1px solid var(--border); }
+.ann-item:last-child { border-bottom:none; padding-bottom:0; }
+.ann-item:first-child { padding-top:0; }
+.ann-line  { width:2px; border-radius:2px; flex-shrink:0; align-self:stretch; }
+.ann-title { font-size:12px; font-weight:600; color:var(--text-1); }
+.ann-desc  { font-size:11px; color:var(--text-2); margin-top:2px; line-height:1.4; }
+.ann-date  { font-size:10px; color:var(--text-3); margin-top:4px; font-family:'DM Mono',monospace; }
+
+/* ── TOAST ── */
+.toast { display:none; position:fixed; bottom:24px; right:24px; background:var(--black-2); border:1px solid var(--green); border-radius:var(--radius); padding:12px 18px; font-size:13px; font-weight:600; color:var(--green); z-index:999; font-family:'DM Mono',monospace; box-shadow:0 8px 32px rgba(0,0,0,0.5); animation:toastUp 0.3s ease; }
+@keyframes toastUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+::-webkit-scrollbar { width:4px; height:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border-2); border-radius:99px; }
+</style>
+</head>
+<body>
+<div class="portal-wrap">
+
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark-sm">LS</div>
+      <div><div class="logo-name-sm">Little Scholars</div><div class="logo-sub-sm">Teacher Portal</div></div>
+    </div>
+    <div class="user-pill">
+      <div class="avatar" id="t-avatar">AA</div>
+      <div>
+        <div class="u-name" id="t-name">Loading…</div>
+        <div class="u-sub"  id="t-subj"></div>
+        <div class="u-badge">TEACHER</div>
+      </div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-label">Main</div>
+      <div class="nav-item active" onclick="switchTab('dashboard',this)"><span class="nav-icon">▣</span> Dashboard</div>
+      <div class="nav-item" onclick="switchTab('students',this)"><span class="nav-icon">◎</span> Students</div>
+      <div class="nav-item" onclick="switchTab('results',this)"><span class="nav-icon">◳</span> Results Entry <span class="nav-badge-amber" id="pending-badge">0</span></div>
+      <div class="nav-item" onclick="switchTab('published',this)"><span class="nav-icon">◉</span> Published Results</div>
+      <div class="nav-label" style="margin-top:8px;">School</div>
+      <div class="nav-item" onclick="switchTab('announcements',this)"><span class="nav-icon">◌</span> Announcements <span class="nav-badge">4</span></div>
+    </div>
+    <div class="sidebar-footer">
+      <button class="signout-btn" onclick="signOut()">→ Sign Out</button>
+    </div>
+  </aside>
+
+  <!-- ══ MAIN ══ -->
+  <div class="main">
+    <div class="topbar">
+      <span class="topbar-title" id="topbar-title">Dashboard</span>
+      <span class="topbar-sep">/</span>
+      <span class="topbar-sub"  id="topbar-sub">Wednesday, 13 May 2026</span>
+      <div class="topbar-right">
+        <span class="chip-amber" id="t-chip">TEACHER</span>
+        <span class="chip-green">TERM 2</span>
+        <div class="icon-btn">🔔<span class="notif-dot"></span></div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ━━━ DASHBOARD ━━━ -->
+      <div class="tab-panel active" id="tab-dashboard">
+        <div class="page-header">
+          <h2 id="t-greeting">Good morning.</h2>
+          <p>Term 2, 2025/2026 · Wednesday, 13 May 2026</p>
+        </div>
+        <div class="stats-row">
+          <div class="stat-card ac-green"><div class="stat-top"><div class="stat-icon-wrap" style="background:var(--green-bg);">👥</div><span class="stat-delta delta-up">2 classes</span></div><div class="stat-value" id="d-students">0</div><div class="stat-label">Total Students</div></div>
+          <div class="stat-card"><div class="stat-top"><div class="stat-icon-wrap" style="background:var(--blue-bg);">📊</div></div><div class="stat-value" id="d-avg" style="color:var(--blue);">—</div><div class="stat-label">Class Average</div></div>
+          <div class="stat-card ac-amber"><div class="stat-top"><div class="stat-icon-wrap" style="background:var(--amber-bg);">📝</div><span class="stat-delta delta-amber">needs entry</span></div><div class="stat-value" id="d-pending" style="color:var(--amber);">0</div><div class="stat-label">Pending Results</div></div>
+          <div class="stat-card"><div class="stat-top"><div class="stat-icon-wrap" style="background:var(--green-bg);">✅</div><span class="stat-delta delta-up">saved</span></div><div class="stat-value" id="d-pub" style="color:var(--green);">0</div><div class="stat-label">Published Exams</div></div>
+        </div>
+        <div class="grid-3-1">
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div class="card"><div class="card-head"><span class="card-title">My Classes</span></div><div class="card-body" id="d-classes"></div></div>
+            <div class="card"><div class="card-head"><span class="card-title">Recent Activity</span></div><div class="card-body" id="d-activity"></div></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div class="card"><div class="card-head"><span class="card-title">Quick Stats</span></div><div class="card-body" id="d-stats"></div></div>
+            <div class="card"><div class="card-head"><span class="card-title">Grade Distribution</span></div><div class="card-body" id="d-grades"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ━━━ STUDENTS ━━━ -->
+      <div class="tab-panel" id="tab-students">
+        <div class="page-header"><h2>Students</h2><p id="stu-subtitle">Class Roster</p></div>
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title" id="stu-card-title">Student Roster</span>
+            <input class="search-input" id="stu-search" placeholder="Search by name or ID…" oninput="filterStudents()">
+          </div>
+          <div class="card-body" style="padding:0;">
+            <div style="overflow-x:auto;padding:0 18px 14px;">
+              <table class="data-table">
+                <thead><tr><th>Student</th><th>ID</th><th>Gender</th><th>Avg Score</th><th>Grade</th><th>Attendance</th><th>Position</th></tr></thead>
+                <tbody id="stu-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ━━━ RESULTS ENTRY ━━━ -->
+      <div class="tab-panel" id="tab-results">
+        <div class="page-header"><h2>Results Entry</h2><p>Enter and save student examination scores</p></div>
+        <div class="ctrl-row">
+          <div class="ctrl-group"><span class="ctrl-label">Class</span><select class="ctrl-select" id="re-class"><option value="">Select Class…</option></select></div>
+          <div class="ctrl-group"><span class="ctrl-label">Subject</span><select class="ctrl-select" id="re-subject"><option value="">Select Subject…</option></select></div>
+          <div class="ctrl-group"><span class="ctrl-label">Exam Type</span>
+            <select class="ctrl-select" id="re-examtype">
+              <option value="">Select Type…</option>
+              <option>Continuous Assessment</option>
+              <option>Mid-Term Exam</option>
+              <option>Final Exam</option>
+            </select>
+          </div>
+          <button class="load-btn" onclick="loadEntrySheet()">Load Sheet →</button>
+        </div>
+        <div class="grade-scale">
+          <div class="gs-title">Grade Scale Reference</div>
+          <div class="gs-row">
+            <div class="gs-item"><span class="gs-grade" style="color:var(--green);">A</span><span class="gs-range">80–100</span></div>
+            <div class="gs-item"><span class="gs-grade" style="color:var(--green);">A-</span><span class="gs-range">75–79</span></div>
+            <div class="gs-item"><span class="gs-grade" style="color:var(--blue);">B+</span><span class="gs-range">70–74</span></div>
+            <div class="gs-item"><span class="gs-grade" style="color:var(--blue);">B</span><span class="gs-range">65–69</span></div>
+            <div class="gs-item"><span class="gs-grade" style="color:var(--blue);">B-</span><span class="gs-range">60–64</span></div>
+            <div class="gs-item"><span class="gs-grade" style="color:var(--amber);">C+</span><span class="gs-range">55–59</span></div>
+            <div class="gs-item"><span class="gs-grade" style="color:var(--amber);">C</span><span class="gs-range">50–54</span></div>
+            <div class="gs-item"><span class="gs-grade" style="color:var(--red);">D</span><span class="gs-range">40–49</span></div>
+            <div class="gs-item"><span class="gs-grade" style="color:var(--red);">F</span><span class="gs-range">0–39</span></div>
+          </div>
+        </div>
+        <div class="card" id="entry-card">
+          <div class="card-head" id="entry-head"><span class="card-title">Select class, subject, and exam type above, then click Load Sheet</span></div>
+          <div id="entry-body">
+            <div class="ep-wrap"><div class="ep-icon">📋</div><div class="ep-title">No Sheet Loaded</div><div class="ep-desc">Select a class, subject, and exam type to begin entering scores.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ━━━ PUBLISHED ━━━ -->
+      <div class="tab-panel" id="tab-published">
+        <div class="page-header"><h2>Published Results</h2><p>All saved examination results for your classes</p></div>
+        <div id="pub-content"></div>
+      </div>
+
+      <!-- ━━━ ANNOUNCEMENTS ━━━ -->
+      <div class="tab-panel" id="tab-announcements">
+        <div class="page-header"><h2>Announcements</h2><p>School-wide notices and updates</p></div>
+        <div class="card">
+          <div class="card-head"><span class="card-title">Latest Announcements</span><span style="font-size:10px;color:var(--text-3);font-family:'DM Mono',monospace;">4 new</span></div>
+          <div class="card-body">
+            <div class="ann-item"><div class="ann-line" style="background:var(--red);"></div><div><div class="ann-title">Results Submission Deadline</div><div class="ann-desc">All teachers must submit Term 2 results by Friday 30 May 2026. Contact the Registrar if you need an extension.</div><div class="ann-date">13 MAY 2026</div></div></div>
+            <div class="ann-item"><div class="ann-line" style="background:var(--green);"></div><div><div class="ann-title">Inter-School Sports Day</div><div class="ann-desc">All staff are required to be on duty on Friday 17 May. PE teachers to report by 7:00 AM.</div><div class="ann-date">12 MAY 2026</div></div></div>
+            <div class="ann-item"><div class="ann-line" style="background:var(--amber);"></div><div><div class="ann-title">Staff Development Meeting</div><div class="ann-desc">Mandatory professional development session: Saturday 24 May, 9 AM – 12 PM in the Assembly Hall.</div><div class="ann-date">11 MAY 2026</div></div></div>
+            <div class="ann-item"><div class="ann-line" style="background:var(--border-2);"></div><div><div class="ann-title">Mid-Term Break Notice</div><div class="ann-desc">School closes Friday 23 May. Resumes Monday 2 June.</div><div class="ann-date">10 MAY 2026</div></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ─── TEACHER ACCOUNTS ────────────────────────────────────── */
+const TEACHERS = {
+  'TCH-001': { name:'Mr. Adeyemi', firstName:'Mr. Adeyemi', initials:'AA', subjects:['Mathematics'],     classes:['4A','4B'], chip:'MR. ADEYEMI' },
+  'TCH-002': { name:'Mrs. Eze',    firstName:'Mrs. Eze',    initials:'ME', subjects:['English Language'], classes:['4B','5A'], chip:'MRS. EZE' },
+};
+
+/* ─── STUDENT DATA ────────────────────────────────────────── */
+const ALL_STUDENTS = {
+  '4B': [
+    {id:'STU-2024-0421',name:'Amara Osei',      initials:'AO',gender:'F',avg:81,att:94},
+    {id:'STU-2024-0388',name:'Kwame Mensah',     initials:'KM',gender:'M',avg:76,att:89},
+    {id:'STU-2024-0412',name:'Chidera Nwosu',    initials:'CN',gender:'M',avg:84,att:97},
+    {id:'STU-2024-0430',name:'Fatima Bello',     initials:'FB',gender:'F',avg:72,att:91},
+    {id:'STU-2024-0441',name:'Emeka Okafor',     initials:'EO',gender:'M',avg:65,att:88},
+    {id:'STU-2024-0455',name:'Yewande Adebisi',  initials:'YA',gender:'F',avg:90,att:100},
+    {id:'STU-2024-0460',name:'Kofi Asante',      initials:'KA',gender:'M',avg:58,att:83},
+    {id:'STU-2024-0471',name:'Blessing Eze',     initials:'BE',gender:'F',avg:79,att:95},
+    {id:'STU-2024-0482',name:'Usman Garba',      initials:'UG',gender:'M',avg:68,att:86},
+    {id:'STU-2024-0493',name:'Sade Oluwole',     initials:'SO',gender:'F',avg:88,att:98},
+    {id:'STU-2024-0504',name:'Tunde Bakare',     initials:'TB',gender:'M',avg:73,att:90},
+    {id:'STU-2024-0515',name:'Ngozi Obi',        initials:'NO',gender:'F',avg:82,att:93},
+  ],
+  '4A': [
+    {id:'STU-2024-0301',name:'Ade Coker',        initials:'AC',gender:'M',avg:77,att:92},
+    {id:'STU-2024-0312',name:'Miriam Asare',     initials:'MA',gender:'F',avg:85,att:96},
+    {id:'STU-2024-0323',name:'Chukwudi Onu',     initials:'CO',gender:'M',avg:62,att:80},
+    {id:'STU-2024-0334',name:'Habiba Musa',      initials:'HM',gender:'F',avg:91,att:99},
+    {id:'STU-2024-0345',name:'Seun Adesanya',    initials:'SA',gender:'M',avg:70,att:87},
+    {id:'STU-2024-0356',name:'Adaeze Nkem',      initials:'AN',gender:'F',avg:78,att:94},
+    {id:'STU-2024-0367',name:'Femi Ogunyemi',    initials:'FO',gender:'M',avg:55,att:75},
+    {id:'STU-2024-0378',name:'Efua Mensah',      initials:'EM',gender:'F',avg:83,att:97},
+  ],
+  '5A': [
+    {id:'STU-2023-0101',name:'Zara Ahmed',       initials:'ZA',gender:'F',avg:89,att:95},
+    {id:'STU-2023-0112',name:'Emmanuel Diop',    initials:'ED',gender:'M',avg:74,att:88},
+    {id:'STU-2023-0123',name:'Nneka Uche',       initials:'NU',gender:'F',avg:81,att:92},
+    {id:'STU-2023-0134',name:'Oluwaseun Bada',   initials:'OB',gender:'M',avg:67,att:84},
+    {id:'STU-2023-0145',name:'Amina Kante',      initials:'AK',gender:'F',avg:93,att:100},
+    {id:'STU-2023-0156',name:'Samuel Owusu',     initials:'SO',gender:'M',avg:71,att:89},
+  ],
+};
+
+/* ─── SAVED RESULTS (in-memory; would be DB in production) ── */
+let savedResults = {
+  '4B|Mathematics|Mid-Term Exam': {
+    entries: {
+      'STU-2024-0421':{ca:22,exam:62,total:84},'STU-2024-0388':{ca:18,exam:58,total:76},
+      'STU-2024-0412':{ca:24,exam:66,total:90},'STU-2024-0430':{ca:19,exam:53,total:72},
+      'STU-2024-0441':{ca:15,exam:46,total:61},'STU-2024-0455':{ca:28,exam:64,total:92},
+      'STU-2024-0460':{ca:12,exam:38,total:50},'STU-2024-0471':{ca:21,exam:59,total:80},
+      'STU-2024-0482':{ca:17,exam:51,total:68},'STU-2024-0493':{ca:26,exam:62,total:88},
+      'STU-2024-0504':{ca:20,exam:54,total:74},'STU-2024-0515':{ca:23,exam:61,total:84},
+    },
+    savedAt:'10 May 2026 · 14:32',
+  },
+};
+
+let currentTeacher = null;
+let currentEntryKey = null;
+
+/* ─── AUTH GUARD ───────────────────────────────────────────── */
+(function authGuard() {
+  const id   = sessionStorage.getItem('ls_user_id');
+  const role = sessionStorage.getItem('ls_user_role');
+  if (!id || role !== 'teacher') {
+    window.location.replace('index.html');
+  }
+})();
+
+/* ─── HELPERS ───────────────────────────────────────────────── */
+function scoreToGrade(s) {
+  if (s === null || s === '' || s === undefined) return '—';
+  s = parseInt(s);
+  if (s >= 80) return 'A'; if (s >= 75) return 'A-'; if (s >= 70) return 'B+';
+  if (s >= 65) return 'B'; if (s >= 60) return 'B-'; if (s >= 55) return 'C+';
+  if (s >= 50) return 'C'; if (s >= 40) return 'D'; return 'F';
+}
+function gradeColor(g) {
+  if (!g || g === '—') return 'var(--text-3)';
+  if (g.startsWith('A')) return 'var(--green)';
+  if (g.startsWith('B')) return 'var(--blue)';
+  if (g.startsWith('C')) return 'var(--amber)';
+  return 'var(--red)';
+}
+function gradeClass(avg) {
+  if (avg >= 80) return 'gp-a'; if (avg >= 65) return 'gp-b';
+  if (avg >= 50) return 'gp-c'; return 'gp-d';
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.display = 'block';
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => { t.style.display = 'none'; }, 3000);
+}
+function greeting() {
+  const h = new Date().getHours();
+  return h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+}
+
+/* ─── INIT ──────────────────────────────────────────────────── */
+function init() {
+  const id   = sessionStorage.getItem('ls_user_id');
+  const acct = TEACHERS[id];
+  if (!acct) return;
+  currentTeacher = { ...acct, id };
+
+  document.getElementById('t-avatar').textContent = acct.initials;
+  document.getElementById('t-name').textContent   = acct.name;
+  document.getElementById('t-subj').textContent   = acct.subjects.join(', ');
+  document.getElementById('t-chip').textContent   = acct.chip;
+  document.getElementById('t-greeting').textContent = `${greeting()}, ${acct.firstName}.`;
+  document.title = `Little Scholars — ${acct.name}`;
+
+  // Populate selects
+  const rc = document.getElementById('re-class');
+  const rs = document.getElementById('re-subject');
+  acct.classes.forEach(c => {
+    const o = document.createElement('option'); o.value = c; o.textContent = 'Class ' + c; rc.appendChild(o);
+  });
+  acct.subjects.forEach(s => {
+    const o = document.createElement('option'); o.value = s; o.textContent = s; rs.appendChild(o);
+  });
+
+  populateDashboard();
+  populateStudents();
+  renderPublished();
+}
+
+/* ─── DASHBOARD ─────────────────────────────────────────────── */
+function populateDashboard() {
+  const acct = currentTeacher;
+  const total = acct.classes.reduce((a, c) => a + (ALL_STUDENTS[c] || []).length, 0);
+  document.getElementById('d-students').textContent = total;
+
+  const examTypes = ['Mid-Term Exam', 'Final Exam', 'Continuous Assessment'];
+  let pending = 0;
+  acct.classes.forEach(c => acct.subjects.forEach(s => examTypes.forEach(et => {
+    if (!savedResults[`${c}|${s}|${et}`]) pending++;
+  })));
+  document.getElementById('d-pending').textContent = pending;
+  document.getElementById('pending-badge').textContent = pending;
+
+  const pub = Object.keys(savedResults).filter(k => {
+    const [cls, subj] = k.split('|');
+    return acct.classes.includes(cls) && acct.subjects.includes(subj);
+  }).length;
+  document.getElementById('d-pub').textContent = pub;
+
+  const avgs = [];
+  acct.classes.forEach(c => (ALL_STUDENTS[c] || []).forEach(s => avgs.push(s.avg)));
+  const oa = avgs.length ? Math.round(avgs.reduce((a, b) => a + b, 0) / avgs.length) : 0;
+  document.getElementById('d-avg').textContent = oa + '%';
+
+  const colors = ['var(--green-bg)', 'var(--blue-bg)', 'var(--amber-bg)'];
+  const cvals  = ['var(--green)',    'var(--blue)',    'var(--amber)'];
+  const clEl = document.getElementById('d-classes'); clEl.innerHTML = '';
+  acct.classes.forEach((c, i) => {
+    const stus = ALL_STUDENTS[c] || [];
+    const avg  = stus.length ? Math.round(stus.reduce((a, x) => a + x.avg, 0) / stus.length) : 0;
+    clEl.innerHTML += `<div class="class-item" onclick="switchTab('students',null)">
+      <div class="class-icon" style="background:${colors[i%3]};color:${cvals[i%3]};">◈</div>
+      <div><div class="class-name">${acct.subjects[0]} · Class ${c}</div><div class="class-sub">${stus.length} students</div></div>
+      <div class="class-meta"><div class="class-avg" style="color:${cvals[i%3]};">${avg}%</div><div class="class-count">avg score</div></div>
+    </div>`;
+  });
+
+  const acts = [];
+  Object.entries(savedResults).forEach(([key, val]) => {
+    const [cls, subj] = key.split('|');
+    if (acct.classes.includes(cls) && acct.subjects.includes(subj))
+      acts.push({ text: `<strong>${key.split('|')[2]}</strong> results saved for Class ${cls} — ${subj}`, time: val.savedAt });
+  });
+  if (!acts.length) acts.push({ text: 'No recent activity recorded yet.', time: '' });
+  document.getElementById('d-activity').innerHTML = acts.map(a =>
+    `<div class="activity-item"><span class="act-dot" style="background:var(--green);"></span>
+     <div><div class="act-text">${a.text}</div>${a.time ? `<div class="act-time">${a.time}</div>` : ''}</div></div>`
+  ).join('');
+
+  let top = null, low = null;
+  acct.classes.forEach(c => (ALL_STUDENTS[c] || []).forEach(s => {
+    if (!top || s.avg > top.avg) top = s;
+    if (!low || s.avg < low.avg) low = s;
+  }));
+  document.getElementById('d-stats').innerHTML = `
+    <div class="perf-row"><span class="perf-key">Top Student</span><span class="perf-val pv-green">${top ? top.name : '—'}</span></div>
+    <div class="perf-row"><span class="perf-key">Top Score</span><span class="perf-val pv-green">${top ? top.avg + '%' : '—'}</span></div>
+    <div class="perf-row"><span class="perf-key">Needs Support</span><span class="perf-val pv-red">${low ? low.name : '—'}</span></div>
+    <div class="perf-row"><span class="perf-key">Classes</span><span class="perf-val">${acct.classes.length}</span></div>`;
+
+  const dist = { A:0,'A-':0,'B+':0,B:0,'B-':0,'C+':0,C:0,D:0,F:0 };
+  acct.classes.forEach(c => (ALL_STUDENTS[c] || []).forEach(s => {
+    const g = scoreToGrade(s.avg); if (dist[g] !== undefined) dist[g]++;
+  }));
+  const tot = Object.values(dist).reduce((a, b) => a + b, 0) || 1;
+  document.getElementById('d-grades').innerHTML = Object.entries(dist).filter(([, v]) => v > 0).map(([g, v]) =>
+    `<div style="display:flex;align-items:center;gap:10px;margin-bottom:7px;">
+       <span style="font-family:'DM Mono',monospace;font-size:11px;font-weight:700;color:${gradeColor(g)};width:22px;">${g}</span>
+       <div style="flex:1;height:6px;background:var(--black-4);border-radius:99px;overflow:hidden;">
+         <div style="width:${Math.round(v / tot * 100)}%;height:100%;background:${gradeColor(g)};border-radius:99px;"></div>
+       </div>
+       <span style="font-size:10px;color:var(--text-3);font-family:'DM Mono',monospace;width:20px;text-align:right;">${v}</span>
+     </div>`
+  ).join('');
+}
+
+/* ─── STUDENTS ───────────────────────────────────────────────── */
+function populateStudents() {
+  const acct  = currentTeacher;
+  const tbody = document.getElementById('stu-tbody');
+  tbody.innerHTML = '';
+  const all = [];
+  acct.classes.forEach(c => (ALL_STUDENTS[c] || []).forEach(s => all.push({ ...s, cls: c })));
+  all.sort((a, b) => b.avg - a.avg);
+  all.forEach((s, i) => {
+    const g = scoreToGrade(s.avg), gc = gradeClass(s.avg);
+    const tr = document.createElement('tr');
+    tr.dataset.name = s.name.toLowerCase();
+    tr.dataset.id   = s.id.toLowerCase();
+    tr.innerHTML = `
+      <td><span class="stu-av">${s.initials}</span><strong>${s.name}</strong></td>
+      <td style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-3);">${s.id}</td>
+      <td style="color:var(--text-3);">${s.gender === 'F' ? 'Female' : 'Male'}</td>
+      <td style="font-family:'DM Mono',monospace;font-weight:700;">${s.avg}%</td>
+      <td><span class="grade-pill ${gc}">${g}</span></td>
+      <td><div class="att-bar"><div class="att-track"><div class="att-fill" style="width:${s.att}%;background:${s.att>=90?'var(--green)':s.att>=75?'var(--amber)':'var(--red)'};"></div></div><span style="font-size:10px;color:var(--text-3);font-family:'DM Mono',monospace;">${s.att}%</span></div></td>
+      <td style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-3);">#${i + 1}</td>`;
+    tbody.appendChild(tr);
+  });
+  document.getElementById('stu-subtitle').textContent   = `${acct.classes.map(c => 'Class ' + c).join(' & ')} · ${all.length} Students`;
+  document.getElementById('stu-card-title').textContent = `${acct.classes.map(c => 'Class ' + c).join(' & ')} — Student Roster`;
+}
+function filterStudents() {
+  const q = document.getElementById('stu-search').value.toLowerCase();
+  document.querySelectorAll('#stu-tbody tr').forEach(tr => {
+    tr.style.display = (tr.dataset.name.includes(q) || tr.dataset.id.includes(q)) ? '' : 'none';
+  });
+}
+
+/* ─── RESULTS ENTRY ─────────────────────────────────────────── */
+function loadEntrySheet() {
+  const cls     = document.getElementById('re-class').value;
+  const subject = document.getElementById('re-subject').value;
+  const exam    = document.getElementById('re-examtype').value;
+  if (!cls || !subject || !exam) { showToast('⚠ Please select class, subject, and exam type'); return; }
+
+  currentEntryKey = `${cls}|${subject}|${exam}`;
+  const students  = ALL_STUDENTS[cls] || [];
+  const saved     = savedResults[currentEntryKey];
+  const isCA      = exam === 'Continuous Assessment';
+
+  document.getElementById('entry-head').innerHTML =
+    `<span class="card-title">Class ${cls} · ${subject} · ${exam}</span>
+     <span style="font-size:10px;color:${saved ? 'var(--green)' : 'var(--amber)'};font-family:'DM Mono',monospace;">
+       ${saved ? '● Saved — ' + saved.savedAt : '● Not yet saved'}
+     </span>`;
+
+  // Summary bar
+  let sbHTML = `<div class="summary-bar"><div class="sb-item"><div class="sb-val">${students.length}</div><div class="sb-lbl">Students</div></div>`;
+  if (saved) {
+    const vals = Object.values(saved.entries).map(e => e.total).filter(v => v != null);
+    const avg  = vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : 0;
+    sbHTML += `<div class="sb-item"><div class="sb-val" style="color:var(--green);">${avg}%</div><div class="sb-lbl">Class Avg</div></div>
+               <div class="sb-item"><div class="sb-val">${vals.length ? Math.max(...vals) : '—'}</div><div class="sb-lbl">Highest</div></div>
+               <div class="sb-item"><div class="sb-val" style="color:var(--red);">${vals.length ? Math.min(...vals) : '—'}</div><div class="sb-lbl">Lowest</div></div>`;
+  }
+  sbHTML += '</div>';
+
+  // Table header
+  let thead = `<thead><tr><th style="min-width:200px;">Student</th>
+    <th class="c">CA /30</th>${!isCA ? '<th class="c">Exam /70</th>' : ''}
+    <th class="c">Total</th><th class="c">Grade</th><th class="c">Status</th>
+  </tr></thead>`;
+
+  // Table rows
+  let rows = '';
+  students.forEach(s => {
+    const rec  = saved ? saved.entries[s.id] : null;
+    const caV  = rec ? rec.ca   : '';
+    const exV  = rec ? rec.exam : '';
+    const totV = rec ? rec.total : '';
+    const g    = totV !== '' ? scoreToGrade(totV) : '—';
+    const gc   = gradeColor(g);
+    const isSaved = rec && totV !== '';
+    rows += `<tr id="row-${s.id}">
+      <td><div class="stu-cell"><span class="stu-av">${s.initials}</span><div><div class="stu-full">${s.name}</div><div class="stu-id">${s.id}</div></div></div></td>
+      <td><div class="score-wrap">
+        <input type="number" min="0" max="30" class="score-input${caV !== '' ? ' has-val' : ''}" id="ca-${s.id}" value="${caV}" placeholder="—" oninput="calcRow('${s.id}','${isCA ? 'ca' : 'both'}')">
+        <span class="max-lbl">/30</span>
+      </div></td>
+      ${!isCA ? `<td><div class="score-wrap">
+        <input type="number" min="0" max="70" class="score-input${exV !== '' ? ' has-val' : ''}" id="ex-${s.id}" value="${exV}" placeholder="—" oninput="calcRow('${s.id}','both')">
+        <span class="max-lbl">/70</span>
+      </div></td>` : ''}
+      <td class="tot-cell" id="tot-${s.id}" style="color:${totV !== '' ? gc : 'var(--text-3)'};">${totV !== '' ? totV : '—'}</td>
+      <td class="grade-cell"><span style="font-family:'DM Mono',monospace;font-size:12px;font-weight:700;color:${gc};" id="grd-${s.id}">${g}</span></td>
+      <td class="stat-cell" id="sta-${s.id}"><span class="rs-dot ${isSaved ? 'rs-saved' : 'rs-missing'}"></span><span class="rs-lbl" style="color:${isSaved ? 'var(--green)' : 'var(--text-3)'};">${isSaved ? 'Saved' : 'Empty'}</span></td>
+    </tr>`;
+  });
+
+  document.getElementById('entry-body').innerHTML = `
+    <div style="padding:14px 18px 0;">${sbHTML}</div>
+    <div style="padding:0 18px;overflow-x:auto;">
+      <table class="entry-table">${thead}<tbody>${rows}</tbody></table>
+    </div>
+    <div style="padding:12px 18px 18px;" class="tbl-actions">
+      <button class="act-btn btn-clear" onclick="clearSheet()">Clear All</button>
+      <button class="act-btn btn-exp"   onclick="showToast('📋 Export feature coming soon')">Export CSV</button>
+      <button class="act-btn btn-save"  onclick="saveResults()">Save Results ✓</button>
+    </div>`;
+}
+
+function calcRow(stuId, mode) {
+  const caEl  = document.getElementById(`ca-${stuId}`);
+  const exEl  = document.getElementById(`ex-${stuId}`);
+  const totEl = document.getElementById(`tot-${stuId}`);
+  const grdEl = document.getElementById(`grd-${stuId}`);
+  const staEl = document.getElementById(`sta-${stuId}`);
+  const ca = caEl ? parseInt(caEl.value) : NaN;
+  const ex = exEl ? parseInt(exEl.value) : NaN;
+
+  if (caEl) {
+    caEl.classList.toggle('err-val', caEl.value !== '' && (isNaN(ca) || ca < 0 || ca > 30));
+    caEl.classList.toggle('has-val', caEl.value !== '' && !caEl.classList.contains('err-val'));
+  }
+  if (exEl) {
+    exEl.classList.toggle('err-val', exEl.value !== '' && (isNaN(ex) || ex < 0 || ex > 70));
+    exEl.classList.toggle('has-val', exEl.value !== '' && !exEl.classList.contains('err-val'));
+  }
+
+  let total = null;
+  if (mode === 'ca' && !isNaN(ca) && caEl.value !== '') total = ca;
+  else if (mode === 'both' && !isNaN(ca) && caEl.value !== '' && exEl && !isNaN(ex) && exEl.value !== '') total = ca + ex;
+
+  if (total !== null) {
+    const g = scoreToGrade(total), gc = gradeColor(g);
+    totEl.textContent = total; totEl.style.color = gc;
+    grdEl.textContent = g;    grdEl.style.color = gc;
+    staEl.innerHTML = `<span class="rs-dot rs-unsaved"></span><span class="rs-lbl" style="color:var(--amber);">Unsaved</span>`;
+  } else {
+    totEl.textContent = '—'; totEl.style.color = 'var(--text-3)';
+    grdEl.textContent = '—'; grdEl.style.color = 'var(--text-3)';
+    staEl.innerHTML = `<span class="rs-dot rs-missing"></span><span class="rs-lbl" style="color:var(--text-3);">Empty</span>`;
+  }
+}
+
+function saveResults() {
+  if (!currentEntryKey) return;
+  const cls  = document.getElementById('re-class').value;
+  const exam = document.getElementById('re-examtype').value;
+  const students = ALL_STUDENTS[cls] || [];
+  const entries  = {}; let count = 0;
+  students.forEach(s => {
+    const caEl  = document.getElementById(`ca-${s.id}`);
+    const exEl  = document.getElementById(`ex-${s.id}`);
+    const totEl = document.getElementById(`tot-${s.id}`);
+    if (!caEl) return;
+    const ca  = caEl.value  !== '' ? parseInt(caEl.value)  : null;
+    const ex  = exEl && exEl.value !== '' ? parseInt(exEl.value) : null;
+    const tot = totEl.textContent !== '—' ? parseInt(totEl.textContent) : null;
+    if (ca !== null || ex !== null) { entries[s.id] = { ca, exam: ex, total: tot }; count++; }
+  });
+
+  const now = new Date();
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const ts = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()} · ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  savedResults[currentEntryKey] = { entries, savedAt: ts };
+
+  students.forEach(s => {
+    const staEl = document.getElementById(`sta-${s.id}`);
+    if (staEl && entries[s.id]) staEl.innerHTML = `<span class="rs-dot rs-saved"></span><span class="rs-lbl" style="color:var(--green);">Saved</span>`;
+  });
+  document.getElementById('entry-head').innerHTML =
+    `<span class="card-title">Class ${cls} · ${document.getElementById('re-subject').value} · ${exam}</span>
+     <span style="font-size:10px;color:var(--green);font-family:'DM Mono',monospace;">● Saved — ${ts}</span>`;
+
+  populateDashboard();
+  renderPublished();
+  showToast(`✓ ${count} results saved successfully`);
+}
+
+function clearSheet() {
+  if (!currentEntryKey) return;
+  const cls = document.getElementById('re-class').value;
+  (ALL_STUDENTS[cls] || []).forEach(s => {
+    ['ca','ex'].forEach(pre => { const el = document.getElementById(`${pre}-${s.id}`); if (el) { el.value = ''; el.classList.remove('has-val','err-val'); } });
+    const totEl = document.getElementById(`tot-${s.id}`); if (totEl) { totEl.textContent = '—'; totEl.style.color = 'var(--text-3)'; }
+    const grdEl = document.getElementById(`grd-${s.id}`); if (grdEl) { grdEl.textContent = '—'; grdEl.style.color = 'var(--text-3)'; }
+    const staEl = document.getElementById(`sta-${s.id}`); if (staEl) staEl.innerHTML = `<span class="rs-dot rs-missing"></span><span class="rs-lbl" style="color:var(--text-3);">Empty</span>`;
+  });
+}
+
+/* ─── PUBLISHED RESULTS ─────────────────────────────────────── */
+function renderPublished() {
+  const acct      = currentTeacher;
+  const container = document.getElementById('pub-content');
+  if (!acct || !container) return;
+
+  const keys = Object.keys(savedResults).filter(k => {
+    const [cls, subj] = k.split('|');
+    return acct.classes.includes(cls) && acct.subjects.includes(subj);
+  });
+
+  if (!keys.length) {
+    container.innerHTML = `<div class="card"><div class="card-body"><div class="ep-wrap">
+      <div class="ep-icon">📊</div><div class="ep-title">No Published Results Yet</div>
+      <div class="ep-desc">Save results from the Results Entry tab and they'll appear here.</div>
+    </div></div></div>`;
+    return;
+  }
+
+  container.innerHTML = keys.map(key => {
+    const [cls, subj, exam] = key.split('|');
+    const rec      = savedResults[key];
+    const students = ALL_STUDENTS[cls] || [];
+    const ranked   = students
+      .filter(s => rec.entries[s.id] && rec.entries[s.id].total != null)
+      .sort((a, b) => (rec.entries[b.id]?.total || 0) - (rec.entries[a.id]?.total || 0));
+    const totals = ranked.map(s => rec.entries[s.id].total);
+    const avg    = totals.length ? Math.round(totals.reduce((a, b) => a + b, 0) / totals.length) : 0;
+    const pass   = totals.filter(t => t >= 50).length;
+    const first  = rec.entries[ranked[0]?.id];
+    const hasExam = first && first.exam != null;
+
+    return `<div class="card" style="margin-bottom:14px;">
+      <div class="card-head">
+        <span class="card-title">Class ${cls} · ${subj} · ${exam}</span>
+        <span style="font-size:10px;color:var(--green);font-family:'DM Mono',monospace;">✓ Saved ${rec.savedAt}</span>
+      </div>
+      <div style="padding:12px 18px 4px;display:flex;gap:10px;flex-wrap:wrap;">
+        <div class="sb-item"><div class="sb-val">${ranked.length}</div><div class="sb-lbl">Entries</div></div>
+        <div class="sb-item"><div class="sb-val" style="color:var(--green);">${avg}%</div><div class="sb-lbl">Avg Score</div></div>
+        <div class="sb-item"><div class="sb-val" style="color:var(--green);">${pass}/${ranked.length}</div><div class="sb-lbl">Passed</div></div>
+      </div>
+      <div class="card-body" style="padding:0 18px 18px;">
+        <div class="pub-table-wrap">
+          <table class="pub-table">
+            <thead><tr>
+              <th>#</th><th>Student</th>
+              ${hasExam ? '<th>CA /30</th><th>Exam /70</th>' : '<th>Score /30</th>'}
+              <th>Total</th><th>Grade</th><th>Remark</th>
+            </tr></thead>
+            <tbody>
+              ${ranked.map((s, i) => {
+                const e  = rec.entries[s.id];
+                const g  = scoreToGrade(e.total), gc = gradeColor(g);
+                const rm = e.total >= 80 ? 'Excellent' : e.total >= 65 ? 'Very Good' : e.total >= 50 ? 'Good' : 'Below Average';
+                const rmc= e.total >= 80 ? 'rm-ex' : e.total >= 65 ? 'rm-vg' : e.total >= 50 ? 'rm-gd' : 'rm-av';
+                return `<tr>
+                  <td style="color:var(--text-3);font-family:'DM Mono',monospace;font-size:11px;">${i+1}</td>
+                  <td><span class="stu-av" style="margin-right:6px;">${s.initials}</span><strong>${s.name}</strong></td>
+                  ${hasExam ? `<td style="font-family:'DM Mono',monospace;">${e.ca ?? '—'}</td><td style="font-family:'DM Mono',monospace;">${e.exam ?? '—'}</td>` : `<td style="font-family:'DM Mono',monospace;">${e.ca ?? '—'}</td>`}
+                  <td style="font-family:'DM Mono',monospace;font-weight:700;color:${gc};">${e.total}</td>
+                  <td><span style="font-family:'DM Mono',monospace;font-size:12px;font-weight:700;color:${gc};">${g}</span></td>
+                  <td><span class="remark-tag ${rmc}">${rm}</span></td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+            <tfoot><tr>
+              <td colspan="${hasExam ? 4 : 3}" style="color:var(--text-2);font-weight:600;">Class Average</td>
+              <td style="font-family:'DM Mono',monospace;color:var(--green);font-weight:700;">${avg}</td>
+              <td colspan="2" style="color:var(--text-3);font-size:11px;">${pass} of ${ranked.length} passed</td>
+            </tr></tfoot>
+          </table>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ─── NAVIGATION ────────────────────────────────────────────── */
+const TAB_META = {
+  dashboard:     { title:'Dashboard',         sub:'Wednesday, 13 May 2026' },
+  students:      { title:'Students',          sub:'Class Roster' },
+  results:       { title:'Results Entry',     sub:'Enter Examination Scores' },
+  published:     { title:'Published Results', sub:'Saved Exam Records' },
+  announcements: { title:'Announcements',     sub:'School Notices' },
+};
+function switchTab(tab, trigger) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  if (trigger) trigger.classList.add('active');
+  const m = TAB_META[tab] || {};
+  document.getElementById('topbar-title').textContent = m.title || tab;
+  document.getElementById('topbar-sub').textContent   = m.sub   || '';
+  if (tab === 'published') renderPublished();
+}
+
+/* ─── SIGN OUT ──────────────────────────────────────────────── */
+function signOut() {
+  sessionStorage.removeItem('ls_user_id');
+  sessionStorage.removeItem('ls_user_role');
+  window.location.href = 'index.html';
+}
+
+/* ─── BOOT ──────────────────────────────────────────────────── */
+init();
+</script>
+</body>
+</html>
