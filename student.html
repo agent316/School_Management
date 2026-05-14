@@ -627,20 +627,35 @@ const STUDENTS = {
 };
 
 /* ─── AUTH GUARD ───────────────────────────────────────────────
-   Check sessionStorage for a valid student session.
-   If missing or wrong role, bounce back to login.
+   Reads the user ID from:
+     1. URL query parameter  ?uid=STU-xxxx   (most reliable for file://)
+     2. localStorage fallback
+   If neither yields a valid student account, redirect to login.
 ──────────────────────────────────────────────────────────────── */
+function getSessionId() {
+  // Try URL param first
+  const params = new URLSearchParams(window.location.search);
+  const urlId  = params.get('uid');
+  if (urlId) {
+    // Persist it so refreshing the page still works
+    localStorage.setItem('ls_user_id',   urlId);
+    localStorage.setItem('ls_user_role', 'student');
+    return urlId;
+  }
+  return localStorage.getItem('ls_user_id');
+}
+
 (function authGuard() {
-  const id   = sessionStorage.getItem('ls_user_id');
-  const role = sessionStorage.getItem('ls_user_role');
-  if (!id || role !== 'student') {
+  const id   = getSessionId();
+  const role = localStorage.getItem('ls_user_role');
+  if (!id || role !== 'student' || !STUDENTS[id]) {
     window.location.replace('index.html');
   }
 })();
 
 /* ─── PERSONALISE ──────────────────────────────────────────── */
 function init() {
-  const id   = sessionStorage.getItem('ls_user_id');
+  const id   = getSessionId();
   const acct = STUDENTS[id];
   if (!acct) return;
 
@@ -690,8 +705,8 @@ function filterAssign(filter, btn) {
 
 /* ─── SIGN OUT ─────────────────────────────────────────────── */
 function signOut() {
-  sessionStorage.removeItem('ls_user_id');
-  sessionStorage.removeItem('ls_user_role');
+  localStorage.removeItem('ls_user_id');
+  localStorage.removeItem('ls_user_role');
   window.location.href = 'index.html';
 }
 
